@@ -12,10 +12,15 @@ export const metadata = {
   description:
     "Grace International School provides excellent education, character formation, and modern learning for pupils in Sierra Leone. Enroll today for quality academic growth.",
 
+  manifest: "/manifest.webmanifest",
+
   icons: {
-    icon: "/images/grace.jpg",
-    shortcut: "/images/grace.jpg",
-    apple: "/images/grace.jpg",
+    icon: [
+      { url: "/icons/icon-192x192.png", sizes: "192x192", type: "image/png" },
+      { url: "/icons/icon-512x512.png", sizes: "512x512", type: "image/png" },
+    ],
+    shortcut: "/icons/icon-192x192.png",
+    apple: "/icons/icon-192x192.png",
   },
 
   keywords: [
@@ -36,13 +41,10 @@ export const metadata = {
   publisher: "Grace International School",
 
   metadataBase: new URL("https://www.graceinternationalschool.sl"),
-
-  category: "Education",
   applicationName: "Grace International School Portal",
   classification: "Educational Institution",
 
   robots: { index: true, follow: true },
-
   referrer: "strict-origin-when-cross-origin",
 
   alternates: {
