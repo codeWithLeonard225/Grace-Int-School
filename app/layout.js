@@ -90,6 +90,7 @@ export default function RootLayout({ children }) {
       <head>
           <link rel="manifest" href="/manifest.webmanifest" />
            <meta name="theme-color" content="#0a1a3a" />
+        <meta name="color-scheme" content="light" />
       </head>
 
       <body
