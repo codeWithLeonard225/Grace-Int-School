@@ -73,8 +73,8 @@ export default function MainNavbar() {
           {/* Mobile Links */}
           <Link href="/" className="block" onClick={() => setOpen(false)}>Home</Link>
           <Link href="/about" className="block" onClick={() => setOpen(false)}>About</Link>
-          <Link href="/services" className="block" onClick={() => setOpen(false)}>Services</Link>
-          <Link href="/gallary" className="block" onClick={() => setOpen(false)}>Gallery</Link>
+          <Link href="/service" className="block" onClick={() => setOpen(false)}>Services</Link>
+          <Link href="/gallery" className="block" onClick={() => setOpen(false)}>Gallery</Link>
           <Link href="/contact" className="block" onClick={() => setOpen(false)}>Contact</Link>
           
           {/* LOGIN BUTTON (Mobile) */}
