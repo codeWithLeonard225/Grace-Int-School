@@ -20,7 +20,7 @@ export default function HomePage() {
 
         {/* Background Image */}
         <Image
-          src="/images/grace.jpg"
+          src="/images/schoolbg1.jpg"
           alt="Grace International School Campus"
           fill
           priority

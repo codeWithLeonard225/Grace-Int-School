@@ -1,15 +1,17 @@
+// app/(main)/layout.jsx
+"use client";
 import MainFooter from "../component/MainFooter";
 import MainNavbar from "../component/MainNavbar";
-
+import { AuthProvider } from "@/app/context/AuthContext";
 
 export default function MainLayout({ children }) {
   return (
-    <div>
-     <MainNavbar/>
-      <div className="pt-20"> {/* Prevent content from hiding behind navbar */}
-        {children}
+    <AuthProvider>
+      <div>
+        <MainNavbar />
+        <div className="pt-20">{children}</div>
+        <MainFooter />
       </div>
-      <MainFooter/>
-    </div>
+    </AuthProvider>
   );
 }

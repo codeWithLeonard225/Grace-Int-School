@@ -6,13 +6,13 @@ export default function AboutPage() {
       <section className="relative h-[55vh] bg-cover bg-center flex items-center"
         style={{ backgroundImage: "url('/images/school-hero.jpg')" }}
       >
-        <div className="absolute inset-0 bg-blue-900/70"></div>
+        {/* <div className="absolute inset-0 bg-blue-900/70"></div> */}
 
         <div className="relative z-10 max-w-4xl mx-auto text-center px-6 text-white">
-          <h1 className="text-4xl md:text-6xl font-extrabold mb-4">About Grace International School</h1>
-          <p className="text-lg md:text-xl font-light">
+          {/* <h1 className="text-4xl md:text-6xl font-extrabold mb-4">About Grace International School</h1> */}
+          {/* <p className="text-lg md:text-xl font-light mt-28">
             Shaping minds, building character, and preparing future leaders of Sierra Leone.
-          </p>
+          </p> */}
         </div>
       </section>
 
@@ -22,7 +22,7 @@ export default function AboutPage() {
           <div>
             <h2 className="text-3xl font-bold text-blue-900 mb-4">Who We Are</h2>
             <p className="text-gray-700 leading-relaxed">
-              Grace International School is a premier educational institution in Sierra Leone,
+              Grace International Academy is a premier educational institution in Sierra Leone,
               dedicated to academic excellence and holistic development.  
               For years, we have provided a world-class learning experience supported by modern
               teaching methods, trained educators, and a safe, nurturing environment.
