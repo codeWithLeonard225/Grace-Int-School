@@ -1,9 +1,9 @@
-// Datanase/SchoolResults.jsx
+// Database/SchoolResults.jsx
+"use client";
 
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
-import { getAnalytics } from "firebase/analytics";
+
 
 
 const firebaseConfig = {
@@ -13,12 +13,13 @@ const firebaseConfig = {
   storageBucket: "myschoolhublibarypastquestion.firebasestorage.app",
   messagingSenderId: "29315692621",
   appId: "1:29315692621:web:4edd11bb0b684e54c6c404",
-  measurementId: "G-Q5P8H81JW4"
+  measurementId: "G-Q5P8H81JW4",
 };
 
-// Initialize Firebase with a unique name: "schoolResultsApp"
-const schoolapp = initializeApp(firebaseConfig, "schoolLibAndPastQuestionsApp"); // ⭐️ FIX IS HERE
-const analytics = getAnalytics(schoolapp);
-const othersdb = getFirestore(schoolapp);
+// ✅ Prevent duplicate initialization (VERY IMPORTANT in Next.js)
+const schoolapp =
+  getApps().find(app => app.name === "schoolLibAndPastQuestionsApp") ||
+  initializeApp(firebaseConfig, "schoolLibAndPastQuestionsApp");
 
-export { othersdb };
+// ✅ Firestore client
+export const othersdb = getFirestore(schoolapp);
