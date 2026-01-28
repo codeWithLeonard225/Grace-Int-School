@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import { db } from "@/app/lib/firebase";
+import { pupilLoginFetch } from "@/app/lilpupil/PupilLogin";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/context/AuthContext";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -51,7 +52,7 @@ const LoginPage = () => {
   const getPupilRoute = (type) => {
     switch (type) {
       case "Gov": return "/GovPupilDashboard";
-      case "Private": return "/portal/dashboard/";
+      case "Private": return "/portal/dashboard/Pupil/";
       case "GovSpecial": return "/GovPupilSpecial";
       case "PrivateSpecial": return "/PrivatePupilSpecial";
       case "StaffAttendanceSimple": return "/StaffAttendanceSimple";
@@ -97,7 +98,7 @@ const LoginPage = () => {
             else if (name === "Classes") navigationRoute = "/PupilUpdate";
             else if (name === "Admins") navigationRoute = getAdminRoute(foundUser.adminType);
             else if (name === "PupilsReg") navigationRoute = getPupilRoute(foundUser.pupilType);
-            else if (name === "Teachers") navigationRoute = "/subjectTeacher";
+            else if (name === "Teachers") navigationRoute = "/portal/dashboard/subjectTeacher";
 
             break;
           }
@@ -112,7 +113,7 @@ const LoginPage = () => {
 
       // Fetch school info
       if (schoolId) {
-        const schoolSnap = await getDocs(query(collection(db, "Schools"), where("schoolID", "==", schoolId)));
+        const schoolSnap = await getDocs(query(collection(pupilLoginFetch, "Schools"), where("schoolID", "==", schoolId)));
         if (!schoolSnap.empty) {
           const schoolData = schoolSnap.docs[0].data();
           schoolInfo = {

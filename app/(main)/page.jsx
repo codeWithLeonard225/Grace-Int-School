@@ -13,12 +13,8 @@ export default function HomePage() {
   return (
     <div className="homepage-content">
 
-      {/* =====================================================
-          1. HERO SECTION
-      ====================================================== */}
+      {/* 1. HERO SECTION */}
       <section className="relative h-[80vh] flex items-center justify-center text-white">
-
-        {/* Background Image */}
         <Image
           src="/images/schoolbg1.jpg"
           alt="Grace International School Campus"
@@ -27,20 +23,14 @@ export default function HomePage() {
           className="object-cover"
           sizes="100vw"
         />
-
-        {/* Dark Overlay */}
         <div className="absolute inset-0 bg-blue-900/60"></div>
-
-        {/* Text Content */}
         <div className="z-10 max-w-4xl text-center p-6">
           <h1 className="text-5xl md:text-7xl font-extrabold mb-4 drop-shadow-lg">
             Excellence in Education for a Global Future.
           </h1>
-
           <p className="text-xl md:text-2xl mb-8 font-light drop-shadow-md">
             Fostering character, academic rigor, and digital literacy in Sierra Leone.
           </p>
-
           <Link
             href="/about"
             className="bg-green-500 hover:bg-green-600 text-white text-lg font-semibold px-8 py-3 rounded-full shadow-xl transition duration-300"
@@ -50,48 +40,107 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* 2. EDUCATIONAL PILLARS */}
+     <section className="py-16 bg-gray-50 text-center">
+  <h2 className="text-3xl font-bold text-blue-800 mb-10">
+    Our Educational Pillars
+  </h2>
+
+  <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-6">
+
+    <div className="p-6 bg-white rounded-lg shadow-lg hover:shadow-2xl transition duration-300">
+      <h3 className="text-2xl font-semibold text-blue-600 mb-3">
+        Academic Excellence
+      </h3>
+      <p className="text-gray-600">
+        Delivering a rigorous, internationally aligned curriculum that prepares
+        students to excel academically and reach their full potential.
+      </p>
+    </div>
+
+    <div className="p-6 bg-white rounded-lg shadow-lg hover:shadow-2xl transition duration-300">
+      <h3 className="text-2xl font-semibold text-blue-600 mb-3">
+        Character & Holistic Development
+      </h3>
+      <p className="text-gray-600">
+        Instilling integrity, discipline, and strong moral values while providing
+        social and psychological support in a caring learning environment.
+      </p>
+    </div>
+
+    <div className="p-6 bg-white rounded-lg shadow-lg hover:shadow-2xl transition duration-300">
+      <h3 className="text-2xl font-semibold text-blue-600 mb-3">
+        Student-Centered & Future-Ready Learning
+      </h3>
+      <p className="text-gray-600">
+        Equipping students with 21st-century skills, digital literacy, and
+        real-world competencies through student-focused teaching.
+      </p>
+    </div>
+
+  </div>
+</section>
+
+
       {/* =====================================================
-          2. EDUCATIONAL PILLARS
+          3. PROPRIETOR'S MESSAGE SECTION
       ====================================================== */}
-      <section className="py-16 bg-gray-50 text-center">
-        <h2 className="text-3xl font-bold text-blue-800 mb-10">Our Educational Pillars</h2>
-
-        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 px-6">
+      <section className="py-20 px-6 bg-white">
+        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-12">
           
-          <div className="p-6 bg-white rounded-lg shadow-lg hover:shadow-2xl transition duration-300">
-            <h3 className="text-2xl font-semibold text-blue-600 mb-3">Academic Rigor</h3>
-            <p className="text-gray-600">
-              Preparing students for success with a challenging curriculum meeting international standards.
-            </p>
+          {/* Proprietor Image Container */}
+          <div className="w-full lg:w-2/5 flex justify-center">
+            <div className="relative w-full max-w-sm aspect-[4/5] rounded-2xl overflow-hidden shadow-2xl border-b-8 border-green-500">
+              <Image
+                src="/images/proprietor.png" 
+                alt="Proprietor of Grace International Academy"
+                fill
+                className="object-contain"
+                sizes="(max-width: 768px) 100vw, 400px"
+              />
+            </div>
           </div>
 
-          <div className="p-6 bg-white rounded-lg shadow-lg hover:shadow-2xl transition duration-300">
-            <h3 className="text-2xl font-semibold text-blue-600 mb-3">Holistic Development</h3>
-            <p className="text-gray-600">
-              Building character, leadership, and creativity through balanced extracurricular programs.
-            </p>
-          </div>
+          {/* Message Content */}
+          <div className="w-full lg:w-3/5">
+            <h4 className="text-green-600 font-bold tracking-widest uppercase text-sm mb-2">Welcome to GIA</h4>
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-900 mb-6">
+              Message to our Beloved Parents & Guardians
+            </h2>
+            
+            <div className="space-y-4 text-gray-700 leading-relaxed text-lg">
+              <p>
+                We are extremely excited that you have found interest in <strong>Grace International Academy (GIA)</strong> and have made the decision to enroll your children. At GIA, we place keen emphasis on providing every student the opportunity for social and psychological support, moral direction, and academic rigidity.
+              </p>
+              
+              <p>
+                GIA is a 21st-century international school—an epicenter of academic excellence that is purpose-driven and student-centered. We remain concentrated on our mission of empowering our students to become professionals with the right balance of skills, knowledge, integrity, and honesty.
+              </p>
 
-          <div className="p-6 bg-white rounded-lg shadow-lg hover:shadow-2xl transition duration-300">
-            <h3 className="text-2xl font-semibold text-blue-600 mb-3">Digital Integration</h3>
-            <p className="text-gray-600">
-              Empowering students with technology and access to our secure Student Portal.
-            </p>
+              <p className="italic border-l-4 border-green-500 pl-4 bg-gray-50 py-2">
+                "We are a caring school which believes in upholding the pride and dignity of every individual. We have recruited top-notch, highly qualified teaching and support staff to serve the students we lead."
+              </p>
+
+              <p>
+                We promise to meet your expectations in ensuring our students enjoy and acquire the skills and knowledge needed for a brighter future. Together, let us enable them to discover and optimize their full potential to lead the change the world so desires.
+              </p>
+            </div>
+
+            <div className="mt-8">
+              <p className="text-xl font-bold text-blue-900">[PST. EMMEANUEL AIAH MOMOH]</p>
+              <p className="text-green-600 font-medium tracking-wide">Proprietor / Founder, GIA</p>
+            </div>
           </div>
 
         </div>
       </section>
 
-      {/* =====================================================
-          3. NEWS & EVENTS
-      ====================================================== */}
+      {/* 4. NEWS & EVENTS */}
       <section className="py-16 px-6 max-w-7xl mx-auto">
         <h2 className="text-3xl font-bold text-blue-800 mb-8 border-b-2 border-green-500 pb-2">
           Latest School Updates
         </h2>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          
           <div className="bg-white p-6 shadow-md rounded-lg hover:shadow-xl transition">
             <h3 className="text-xl font-bold mb-2">Admissions Open for 2026!</h3>
             <p className="text-gray-600">
@@ -101,7 +150,6 @@ export default function HomePage() {
               Read More &rarr;
             </Link>
           </div>
-
           <div className="bg-white p-6 shadow-md rounded-lg hover:shadow-xl transition">
             <h3 className="text-xl font-bold mb-2">Term 1 Parent-Teacher Day</h3>
             <p className="text-gray-600">
@@ -111,31 +159,24 @@ export default function HomePage() {
               View Calendar &rarr;
             </Link>
           </div>
-
         </div>
       </section>
 
-      {/* =====================================================
-          4. STUDENT PORTAL CTA
-      ====================================================== */}
+      {/* 5. STUDENT PORTAL CTA */}
       <section className="bg-blue-950 py-12">
         <div className="max-w-4xl mx-auto text-center p-6">
-          
           <h2 className="text-3xl font-bold text-white mb-4">
             Students & Parents Portal
           </h2>
-
           <p className="text-white/80 text-lg mb-6">
             View grades, schedules, announcements, and more through our secure online portal.
           </p>
-
           <Link
             href="/login"
             className="bg-yellow-400 hover:bg-yellow-500 text-blue-900 text-lg font-bold px-8 py-3 rounded-full shadow-2xl transition duration-300"
           >
             Login to Portal Now
           </Link>
-
         </div>
       </section>
 

@@ -36,7 +36,7 @@ export default function MainNavbar() {
 
           {/* 🛑 SCHOOL NAME 🛑 */}
           <span className="text-xl md:text-2xl font-bold text-blue-700 hidden sm:block">
-            Grace International School
+            Grace International Academy
           </span>
         </Link>
 

@@ -3,13 +3,13 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCzmYnFl_Q8n7VWTWD2xdMlzJvrul_8xDo",
-  authDomain: "myschoolhub-sl.firebaseapp.com",
-  projectId: "myschoolhub-sl",
-  storageBucket: "myschoolhub-sl.firebasestorage.app",
-  messagingSenderId: "828034353905",
-  appId: "1:828034353905:web:7b54db7c539786871c3750",
-  measurementId: "G-8B8SSPZ1V1"
+  apiKey: "AIzaSyBiM6FPhCh7m0C0RVkFxD0DVCNJl04RI3E",
+  authDomain: "myschoolhubadmission.firebaseapp.com",
+  projectId: "myschoolhubadmission",
+  storageBucket: "myschoolhubadmission.firebasestorage.app",
+  messagingSenderId: "23728177178",
+  appId: "1:23728177178:web:331178c4bbe3e0652811a3",
+  measurementId: "G-4P3MSXWV7B"
 };
 
 

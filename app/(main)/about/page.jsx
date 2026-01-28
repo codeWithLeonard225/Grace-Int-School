@@ -47,16 +47,17 @@ export default function AboutPage() {
           <div className="bg-white p-8 rounded-xl shadow-lg">
             <h3 className="text-2xl font-bold text-blue-800 mb-3">Our Vision</h3>
             <p className="text-gray-700">
-              To raise globally competitive students through quality education,
-              digital innovation, and character development.
+             To foster an atmosphere where all the stakeholders feel and have 
+             assurance that they are valued members of the school community.
             </p>
           </div>
 
           <div className="bg-white p-8 rounded-xl shadow-lg">
             <h3 className="text-2xl font-bold text-blue-800 mb-3">Our Mission</h3>
             <p className="text-gray-700">
-              To provide a safe, technology-driven, and morally grounded learning environment
-              where students excel academically and socially.
+             Our Mission is to empower all pupils to acquire, 
+             apply knowledge and to rely upon their personal attribute to lead productive lives who are academically grounded, 
+             morally upright and adequately equipped as future leaders.
             </p>
           </div>
 

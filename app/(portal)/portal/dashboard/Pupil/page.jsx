@@ -14,10 +14,10 @@ import {
 
 import { useAuth } from "@/app/context/AuthContext"; 
 import { useRouter } from "next/navigation";
-import IndividualReportCard from "../reportCard/IndividualReportCard";
-import PupilFeesPage from "../fees/page";
-import PupilAttendance from "../attendance/page";
-import PupilPastQuestionViewer from "../pastquestions/page";
+import IndividualReportCard from "../../reportCard/IndividualReportCard";
+import PupilFeesPage from "../../fees/page";
+import PupilAttendance from "../../attendance/page";
+import PupilPastQuestionViewer from "../../pastquestions/page";
 
 
 // NAV ITEMS
