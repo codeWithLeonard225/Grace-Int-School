@@ -3,8 +3,9 @@
 import React, { useState, useEffect } from "react";
 
 // ✅ Your Specific Databases
-import { db } from "@/app/lib/firebase"; 
-import { pupilresult } from "@/app/lilresult/resultFetch";
+import { db } from "@/app/lib/firebase";
+import { othersdb } from "@/app/lilschoollpq/schoollpq";
+// Note: pupilresult is available for use if you need to fetch historical results
 import { pupilLoginFetch } from "@/app/lilpupil/PupilLogin";
 // ✅ Firestore
 import {
@@ -117,7 +118,7 @@ const TeacherGradesPage = () => {
     const checkStatus = async () => {
       if (!selectedClass || !selectedSubject || !selectedTest || !academicYear) return;
       const q = query(
-        collection(pupilresult, "PupilGrades"),
+        collection(schooldb, "PupilGrades"),
         where("className", "==", selectedClass),
         where("subject", "==", selectedSubject),
         where("test", "==", selectedTest),
@@ -136,21 +137,17 @@ const TeacherGradesPage = () => {
   };
 
   const handleShowPopup = () => {
-  const filled = Object.values(grades).filter(v => v !== "" && v !== null).length;
-  setGradeSummary({ 
-    filled, 
-    empty: pupils.length - filled,
-    total: pupils.length 
-  });
-  setShowPopup(true);
-};
+    const filled = Object.values(grades).filter(v => v !== "").length;
+    setGradeSummary({ filled, empty: pupils.length - filled });
+    setShowPopup(true);
+  };
 
   const handleSubmitGrades = async () => {
     setSubmitting(true);
     try {
       for (const id in grades) {
         if (grades[id] !== "") {
-          await setDoc(doc(collection(pupilresult, "PupilGrades")), {
+          await setDoc(doc(collection(schooldb, "PupilGrades")), {
             pupilID: id,
             className: selectedClass,
             subject: selectedSubject,
@@ -270,69 +267,18 @@ const TeacherGradesPage = () => {
       </button>
 
       {/* Confirm Popup */}
-      {/* Improved Confirm Submission Popup */}
-{showPopup && (
-  <div className="fixed inset-0 flex items-center justify-center bg-gray-900/60 backdrop-blur-sm z-50 p-4">
-    <div className="bg-white w-full max-w-md rounded-[2.5rem] shadow-2xl overflow-hidden border border-gray-100 animate-in fade-in zoom-in duration-200">
-      
-      {/* Header */}
-      <div className="bg-gray-50 px-8 py-6 border-b border-gray-100 text-center">
-        <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
+      {showPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-10">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+            <h3 className="text-lg font-bold">Confirm Submission</h3>
+            <p className="my-2">Filled: {gradeSummary.filled} | Missing: {gradeSummary.empty}</p>
+            <div className="flex gap-2 justify-center mt-4">
+              <button onClick={handleSubmitGrades} className="bg-green-600 text-white px-4 py-2 rounded">Proceed</button>
+              <button onClick={() => setShowPopup(false)} className="bg-gray-300 px-4 py-2 rounded">Cancel</button>
+            </div>
+          </div>
         </div>
-        <h3 className="text-xl font-black text-gray-800 uppercase tracking-tight">Confirm Submission</h3>
-        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Review Grade Entry Summary</p>
-      </div>
-
-      {/* Stats Body */}
-      <div className="p-8 space-y-4">
-        <div className="flex justify-between items-center p-4 bg-gray-50 rounded-2xl">
-          <span className="text-sm font-bold text-gray-500 uppercase">Total Pupils</span>
-          <span className="text-lg font-black text-gray-800">{gradeSummary.total}</span>
-        </div>
-
-        <div className="flex justify-between items-center p-4 bg-green-50 rounded-2xl border border-green-100">
-          <span className="text-sm font-bold text-green-700 uppercase flex items-center gap-2">
-            <span className="w-2 h-2 bg-green-500 rounded-full"></span> Grades Entered
-          </span>
-          <span className="text-lg font-black text-green-700">{gradeSummary.filled}</span>
-        </div>
-
-        <div className="flex justify-between items-center p-4 bg-amber-50 rounded-2xl border border-amber-100">
-          <span className="text-sm font-bold text-amber-700 uppercase flex items-center gap-2">
-            <span className="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span> Grades Missing
-          </span>
-          <span className="text-lg font-black text-amber-700">{gradeSummary.empty}</span>
-        </div>
-
-        {/* Final Warning */}
-        <div className="mt-6 p-4 bg-red-50 rounded-2xl border-l-4 border-red-500">
-          <p className="text-[11px] font-bold text-red-700 leading-relaxed uppercase">
-            ⚠️ Attention: Once submitted, grades for <span className="underline">{selectedTest}</span> ({academicYear}) cannot be changed.
-          </p>
-        </div>
-      </div>
-
-      {/* Actions */}
-      <div className="px-8 pb-8 flex flex-col gap-3">
-        <button 
-          onClick={handleSubmitGrades} 
-          className="w-full bg-gray-900 hover:bg-black text-white font-black py-4 rounded-2xl shadow-lg transition-all active:scale-95 uppercase tracking-widest text-xs"
-        >
-          Finalize & Upload
-        </button>
-        <button 
-          onClick={() => setShowPopup(false)} 
-          className="w-full bg-white text-gray-400 font-bold py-3 rounded-2xl hover:text-gray-600 transition-colors uppercase tracking-widest text-[10px]"
-        >
-          Go Back & Edit
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+      )}
 
       {/* Mandatory Download Popup */}
       {showDownloadPopup && (

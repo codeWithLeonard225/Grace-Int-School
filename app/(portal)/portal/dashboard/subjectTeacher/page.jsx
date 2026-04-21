@@ -14,6 +14,11 @@ import {
 import { useAuth } from "@/app/context/AuthContext";
 import { useRouter } from "next/navigation";
 import TeacherGradesPage from "../../TeacherAssign/TeacherGradesPage";
+import StaffSelfAttendanceReport from "../../TeacherAssign/StaffSelfAttendanceReport";
+import TeacherQuestionsPageObjectives from "../../TeacherAssign/TeacherQuestionsPageObjectives";
+import TeacherQuestionsPageTheory from "../../TeacherAssign/TeacherQuestionsPageTheory";
+import TeacherTimetableReport from "../../TeacherAssign/TeacherTimetableReport";
+import TeacherGradesDashboard from "../../TeacherAssign/TeacherGradesDashboard";
 
 // Updated NAV_ITEMS for a Teacher context
 const NAV_ITEMS = [
@@ -25,6 +30,11 @@ const NAV_ITEMS = [
   {
     key: "grades",
     label: "Upload Grades",
+    icon: <MdAttachMoney />,
+  },
+  {
+    key: "gradesDashboard",
+    label: "GradesDashboard",
     icon: <MdAttachMoney />,
   },
   {
@@ -174,23 +184,28 @@ export default function SubjectTeacherDashboard() {
     
     case "dashboard":
       // This will show the Attendance component when the dashboard tab is clicked
-      // return <PupilAttendance />; 
-      return <div className="p-6">Dashboard / Attendance View</div>;
+      return <StaffSelfAttendanceReport />; 
+    
 
     case "grades":
       return <TeacherGradesPage/>;
       // return <div className="p-6">Grades / Attendance View</div>;
+    case "gradesDashboard":
+      return <TeacherGradesDashboard/>;
+      // return <div className="p-6">Grades / Attendance View</div>;
 
     case "objectives":
+        return < TeacherQuestionsPageObjectives/>
     case "theory":
+      return < TeacherQuestionsPageTheory/>
     case "assignment":
       // These three cases handle the sub-menu items under "Teacher Questions"
       // return <TeacherQuestionsPage type={activeTab} />;
       return <div className="p-6">Question Bank: {activeTab.toUpperCase()}</div>;
 
     case "Timetable":
-      // return <TimetableComponent />;
-      return <div className="p-6">Timetable View</div>;
+      return <TeacherTimetableReport />;
+   
 
     default:
       // If no tab matches (fallback), show this "Under Development" message
