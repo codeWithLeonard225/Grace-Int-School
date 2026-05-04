@@ -59,29 +59,31 @@ const TeacherGradesPage = () => {
   }, []);
 
   /** 2. Fetch Assignments from Main DB */
-  useEffect(() => {
-    if (!teacherName || !schoolId) return;
-    const fetchAssignments = async () => {
-      const cacheKey = `assignments_${teacherName}_${schoolId}`;
-      const cached = localStorage.getItem(cacheKey);
-      let data = [];
+useEffect(() => {
+  if (!teacherName || !schoolId) return;
 
-      if (cached) {
-        data = JSON.parse(cached);
-      } else {
-        const q = query(collection(db, "TeacherAssignments"), where("teacher", "==", teacherName), where("schoolId", "==", schoolId));
-        const snap = await getDocs(q);
-        data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        localStorage.setItem(cacheKey, JSON.stringify(data));
-      }
-      setAssignments(data);
-      if (data.length && !selectedClass) {
-        setSelectedClass(data[0].className);
-        setSelectedSubject(data[0].subjects[0]);
-      }
-    };
-    fetchAssignments();
-  }, [teacherName, schoolId]);
+  const q = query(
+    collection(db, "TeacherAssignments"),
+    where("teacher", "==", teacherName),
+    where("schoolId", "==", schoolId)
+  );
+
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const data = snapshot.docs.map(d => ({
+      id: d.id,
+      ...d.data()
+    }));
+
+    setAssignments(data);
+
+    if (data.length && !selectedClass) {
+      setSelectedClass(data[0].className);
+      setSelectedSubject(data[0].subjects[0]);
+    }
+  });
+
+  return () => unsubscribe();
+}, [teacherName, schoolId]);
 
   /** 3. Sync Pupils via LocalForage */
   useEffect(() => {
