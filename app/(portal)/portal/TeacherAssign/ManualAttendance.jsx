@@ -128,7 +128,7 @@ const ManualAttendance = () => {
         const totalMinutes = hours * 60 + minutes;
 
            const ATTENDANCE_START = 6 * 60 + 30;
-        const PRESENT_END = 8 * 60;
+        const PRESENT_END = 9 * 60;
         const LATE_END = 12 * 60;
         const ABSENT_END = 13 * 60 + 30;
 

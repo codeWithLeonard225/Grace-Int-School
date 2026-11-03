@@ -100,8 +100,8 @@ const PupilAttendanceScanner = () => {
         const totalMinutes = hours * 60 + minutes;
 
               const ATTENDANCE_START = 6 * 60 + 30; // 6:30 AM
-        const PRESENT_END = 8 * 60 + 30 ;       // 8:00 AM
-        const LATE_END = 11 * 60;           // 11:00 PM
+        const PRESENT_END = 9 * 60 ;       // 9:00 AM
+        const LATE_END = 12 * 60;           // 12:00 PM
         const ABSENT_END = 13 * 60 + 30;             // 1:30 PM
 
         if (totalMinutes < ATTENDANCE_START) {

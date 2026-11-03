@@ -37,6 +37,7 @@ import PupilAttendanceScanner from "../../TeacherAssign/PupilAttendanceScanner";
 import PupilsAttendance from "../../TeacherAssign/PupilsAttendance";
 import ManualAttendance from "../../TeacherAssign/ManualAttendance";
 import ClassList from "../../TeacherAssign/ClassList";
+import TeacherDocumentUpload from "../../TeacherAssign/TeacherDocumentUpload";
 
 const NAV_ITEMS = [
   { key: "dashboard", label: "Dashboard", icon: <MdDashboard /> },
@@ -47,6 +48,7 @@ const NAV_ITEMS = [
     label: "Question Bank",
     icon: <MdAssignmentTurnedIn />,
     children: [
+      { key: "TeacherDocumentUpload", label: "TeacherDocumentUpload" },
       { key: "objectives", label: "Objectives" },
       { key: "theory", label: "Theory" },
       { key: "assignment", label: "Assignment" },
@@ -218,6 +220,7 @@ export default function SubjectTeacherDashboard() {
       case "dashboard": return <StaffSelfAttendanceReport />;
       case "grades": return <TeacherGradesPage />;
       case "gradesDashboard": return <TeacherGradesDashboard />;
+      case "TeacherDocumentUpload": return <TeacherDocumentUpload />;
       case "objectives": return <TeacherQuestionsPageObjectives />;
       case "theory": return <TeacherQuestionsPageTheory />;
       case "Timetable": return <TeacherTimetableReport />;
