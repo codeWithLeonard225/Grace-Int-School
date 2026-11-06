@@ -12,6 +12,7 @@ import {
     onSnapshot,
     query, 
     where,
+    updateDoc,
     deleteDoc 
 } from "firebase/firestore";
 import localforage from "localforage";
@@ -19,7 +20,7 @@ import { toast } from "react-toastify";
 
 // ☁️ Cloudinary Credentials
 const CLOUD_NAME = "dyt1xzrcv"; 
-const UPLOAD_PRESET = "firstTime";
+const UPLOAD_PRESET = "firstTime";  //leonardskargbo@gmail.com
 
 // 💾 LocalForage Cache for Teacher Assignments
 const assignmentStore = typeof window !== 'undefined' ? localforage.createInstance({ 
@@ -41,6 +42,11 @@ const TeacherDocumentUpload = () => {
     const [uploading, setUploading] = useState(false);
     const [uploadedDocs, setUploadedDocs] = useState([]);
     
+    // Inline editing states
+    const [editingDocId, setEditingDocId] = useState(null);
+    const [editFileName, setEditFileName] = useState("");
+    const [editTerm, setEditTerm] = useState("");
+
     const tests = ["Term 1 T1", "Term 1 Exam", "Term 2 T1", "Term 2 Exam", "Term 3 T1", "Term 3 Exam"];
 
     // 1. 📋 LOAD TEACHER ASSIGNMENTS (Cache-First)
@@ -67,7 +73,7 @@ const TeacherDocumentUpload = () => {
             );
 
             const unsub = onSnapshot(q, (snapshot) => {
-                const data = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+                const data = snapshot.docs.map((docItem) => ({ id: docItem.id, ...docItem.data() }));
                 setAssignments(data);
                 if (data.length > 0 && !selectedClass) {
                     setSelectedClass(data[0].className);
@@ -99,84 +105,105 @@ const TeacherDocumentUpload = () => {
         );
 
         const unsub = onSnapshot(q, (snapshot) => {
-            const docsList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const docsList = snapshot.docs.map(docItem => ({ id: docItem.id, ...docItem.data() }));
             setUploadedDocs(docsList);
         });
 
         return () => unsub();
     }, [selectedClass, selectedSubject, selectedTest, schoolId, academicYear]);
 
-    // ☁️ HANDLE CLOUDINARY UPLOAD & FIRESTORE SAVE
-   // ☁️ HANDLE CLOUDINARY UPLOAD WITH DYNAMIC FOLDERS & FIRESTORE SAVE
-const handleFileUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+    // ☁️ HANDLE CLOUDINARY UPLOAD WITH DYNAMIC FOLDERS & FIRESTORE SAVE
+    const handleFileUpload = async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
 
-    if (!selectedClass || !selectedSubject) {
-        toast.error("Please select a Class and Subject first.");
-        return;
-    }
-
-    setUploading(true);
-    try {
-        // Construct the folder path: schoolId/className/subjectName
-        // Sanitizing slashes/spaces if necessary to keep folder structures clean
-        const folderPath = `${schoolId}/${selectedClass}/${selectedSubject}`.replace(/\s+/g, '_');
-
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("upload_preset", UPLOAD_PRESET);
-        formData.append("folder", folderPath); // 👈 This creates and organizes the folder structure in Cloudinary
-
-        // Upload to Cloudinary
-        const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`, {
-            method: "POST",
-            body: formData,
-        });
-
-        const data = await response.json();
-
-        if (!data.secure_url) {
-            throw new Error(data.error?.message || "Cloudinary upload failed");
+        if (!selectedClass || !selectedSubject) {
+            toast.error("Please select a Class and Subject first.");
+            return;
         }
 
-        const fileUrl = data.secure_url;
-        const publicId = data.public_id; // Useful if you need to delete or reference the asset later
-        const fileName = file.name;
-        const fileFormat = data.format || file.name.split('.').pop();
+        setUploading(true);
+        try {
+            const folderPath = `${schoolId}/${selectedClass}/${selectedSubject}`.replace(/\s+/g, '_');
 
-        // Save document metadata to Firestore
-        const docRef = doc(collection(schoollpq, "TeacherUploadedDocuments"));
-        await setDoc(docRef, {
-            schoolId,
-            className: selectedClass,
-            subject: selectedSubject,
-            term: selectedTest,
-            academicYear,
-            teacher: teacherName,
-            fileName,
-            fileUrl,
-            publicId,
-            cloudinaryFolder: folderPath,
-            fileFormat,
-            timestamp: serverTimestamp(),
-        });
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("upload_preset", UPLOAD_PRESET);
+            formData.append("folder", folderPath);
 
-        toast.success("Document uploaded to Cloudinary folder successfully!");
-    } catch (error) {
-        console.error("Upload Error:", error);
-        toast.error(error.message || "Failed to upload document.");
-    } finally {
-        setUploading(false);
-        event.target.value = ""; // Reset file input
-    }
-};
+            const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`, {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await response.json();
+
+            if (!data.secure_url) {
+                throw new Error(data.error?.message || "Cloudinary upload failed");
+            }
+
+            const fileUrl = data.secure_url;
+            const publicId = data.public_id;
+            const fileName = file.name;
+            const fileFormat = data.format || file.name.split('.').pop();
+
+            const docRef = doc(collection(schoollpq, "TeacherUploadedDocuments"));
+            await setDoc(docRef, {
+                schoolId,
+                className: selectedClass,
+                subject: selectedSubject,
+                term: selectedTest,
+                academicYear,
+                teacher: teacherName,
+                fileName,
+                fileUrl,
+                publicId,
+                cloudinaryFolder: folderPath,
+                fileFormat,
+                timestamp: serverTimestamp(),
+            });
+
+            toast.success("Document uploaded to Cloudinary folder successfully!");
+        } catch (error) {
+            console.error("Upload Error:", error);
+            toast.error(error.message || "Failed to upload document.");
+        } finally {
+            setUploading(false);
+            event.target.value = "";
+        }
+    };
+
+    // ✏️ START EDITING
+    const handleStartEdit = (docItem) => {
+        setEditingDocId(docItem.id);
+        setEditFileName(docItem.fileName);
+        setEditTerm(docItem.term);
+    };
+
+    // 💾 SAVE EDITS
+    const handleSaveEdit = async (docId) => {
+        if (!editFileName.trim()) return toast.error("File name cannot be empty.");
+        try {
+            const docRef = doc(schoollpq, "TeacherUploadedDocuments", docId);
+            await updateDoc(docRef, {
+                fileName: editFileName.trim(),
+                term: editTerm,
+                timestamp: serverTimestamp(),
+            });
+            setEditingDocId(null);
+            toast.success("Document details updated successfully!");
+        } catch (error) {
+            console.error("Update Error:", error);
+            toast.error("Failed to update document.");
+        }
+    };
 
     // 🗑️ DELETE DOCUMENT RECORD
     const handleDelete = async (docId) => {
-        if (!window.confirm("Are you sure you want to delete this document?")) return;
+        if (!window.confirm("Are you sure you want to delete this document record?")) return;
         try {
             await deleteDoc(doc(schoollpq, "TeacherUploadedDocuments", docId));
+            if (editingDocId === docId) setEditingDocId(null);
             toast.success("Document deleted.");
         } catch (error) {
             console.error("Delete Error:", error);
@@ -254,46 +281,108 @@ const handleFileUpload = async (event) => {
                 </p>
             </div>
 
-            {/* UPLOADED DOCUMENTS LIST */}
+            {/* UPLOADED DOCUMENTS & MODIFICATION TABLE */}
             <div className="overflow-hidden border border-gray-100 rounded-3xl shadow-sm">
                 <table className="w-full text-left text-xs">
                     <thead className="bg-gray-800 text-white uppercase text-[10px] tracking-widest">
                         <tr>
                             <th className="p-4">#</th>
                             <th className="p-4">File Name</th>
+                            <th className="p-4">Term</th>
                             <th className="p-4">Teacher</th>
                             <th className="p-4 text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50">
-                        {uploadedDocs.map((docItem, i) => (
-                            <tr key={docItem.id} className="hover:bg-gray-50 transition-colors">
-                                <td className="p-4 font-bold text-gray-400">{i + 1}</td>
-                                <td className="p-4 font-bold text-red-600 truncate max-w-xs">{docItem.fileName}</td>
-                                <td className="p-4 text-gray-700">{docItem.teacher}</td>
-                                <td className="p-4">
-                                    <div className="flex justify-center gap-3">
-                                        <a 
-                                            href={docItem.fileUrl} 
-                                            target="_blank" 
-                                            rel="noopener noreferrer" 
-                                            className="text-blue-600 font-bold uppercase text-[10px] hover:underline"
-                                        >
-                                            View / Download
-                                        </a>
-                                        <button 
-                                            onClick={() => handleDelete(docItem.id)} 
-                                            className="text-red-500 font-bold uppercase text-[10px] hover:underline"
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
+                        {uploadedDocs.map((docItem, i) => {
+                            const isEditing = editingDocId === docItem.id;
+                            return (
+                                <tr key={docItem.id} className="hover:bg-gray-50 transition-colors">
+                                    <td className="p-4 font-bold text-gray-400">{i + 1}</td>
+                                    
+                                    {/* File Name Column (Editable) */}
+                                    <td className="p-4 font-bold text-red-600 truncate max-w-xs">
+                                        {isEditing ? (
+                                            <input
+                                                type="text"
+                                                value={editFileName}
+                                                onChange={(e) => setEditFileName(e.target.value)}
+                                                className="border rounded px-2 py-1 text-xs w-full bg-white font-normal text-gray-800"
+                                            />
+                                        ) : (
+                                            docItem.fileName
+                                        )}
+                                    </td>
+
+                                    {/* Term Column (Editable) */}
+                                    <td className="p-4 text-gray-700">
+                                        {isEditing ? (
+                                            <select
+                                                value={editTerm}
+                                                onChange={(e) => setEditTerm(e.target.value)}
+                                                className="border rounded px-2 py-1 text-xs bg-white font-normal"
+                                            >
+                                                {tests.map((t, idx) => (
+                                                    <option key={idx} value={t}>{t}</option>
+                                                ))}
+                                            </select>
+                                        ) : (
+                                            docItem.term
+                                        )}
+                                    </td>
+
+                                    <td className="p-4 text-gray-700">{docItem.teacher}</td>
+
+                                    {/* Action Buttons Column */}
+                                    <td className="p-4">
+                                        <div className="flex justify-center items-center gap-3">
+                                            <a 
+                                                href={docItem.fileUrl} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer" 
+                                                className="text-blue-600 font-bold uppercase text-[10px] hover:underline"
+                                            >
+                                                View
+                                            </a>
+
+                                            {isEditing ? (
+                                                <>
+                                                    <button 
+                                                        onClick={() => handleSaveEdit(docItem.id)}
+                                                        className="text-green-600 font-bold uppercase text-[10px] hover:underline"
+                                                    >
+                                                        Save
+                                                    </button>
+                                                    <button 
+                                                        onClick={() => setEditingDocId(null)}
+                                                        className="text-gray-500 font-bold uppercase text-[10px] hover:underline"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                </>
+                                            ) : (
+                                                <button 
+                                                    onClick={() => handleStartEdit(docItem)}
+                                                    className="text-orange-500 font-bold uppercase text-[10px] hover:underline"
+                                                >
+                                                    Edit
+                                                </button>
+                                            )}
+
+                                            <button 
+                                                onClick={() => handleDelete(docItem.id)} 
+                                                className="text-red-500 font-bold uppercase text-[10px] hover:underline"
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            );
+                        })}
                         {uploadedDocs.length === 0 && (
                             <tr>
-                                <td colSpan="4" className="p-10 text-center text-gray-400 font-medium italic">
+                                <td colSpan="5" className="p-10 text-center text-gray-400 font-medium italic">
                                     No documents uploaded for this selection yet.
                                 </td>
                             </tr>

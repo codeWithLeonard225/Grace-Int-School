@@ -20,7 +20,7 @@ import { toast } from "react-toastify";
 
 // ☁️ Cloudinary Credentials
 const CLOUD_NAME = "dyt1xzrcv"; 
-const UPLOAD_PRESET = "firstTime";
+const UPLOAD_PRESET = "firstTime";  //leonardskargbo@gmail.com
 
 // 💾 LocalForage Cache for Teacher Assignments
 const assignmentStore = typeof window !== 'undefined' ? localforage.createInstance({ 
@@ -180,6 +180,51 @@ const TeacherDocumentUpload = () => {
         setEditTerm(docItem.term);
     };
 
+    // VIEW DOCUMENT
+const handleViewDocument = (docItem) => {
+    const fileUrl = docItem.fileUrl;
+    const fileExtension = docItem.fileFormat?.toLowerCase();
+
+    if (fileExtension === "pdf" || fileExtension === "txt") {
+        window.open(fileUrl, "_blank", "noopener,noreferrer");
+    } else {
+        const viewerUrl = `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(fileUrl)}`;
+        window.open(viewerUrl, "_blank", "noopener,noreferrer");
+    }
+};
+
+// DOWNLOAD DOCUMENT
+const handleDownloadDocument = async (docItem) => {
+    try {
+        const response = await fetch(docItem.fileUrl);
+
+        if (!response.ok) {
+            throw new Error("Download failed");
+        }
+
+        const blob = await response.blob();
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.download = docItem.fileName;
+
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        window.URL.revokeObjectURL(downloadUrl);
+
+        toast.success("Download started!");
+    } catch (error) {
+        console.error("Download Error:", error);
+        toast.error("Unable to download document.");
+    }
+};
+
+
+
+
     // 💾 SAVE EDITS
     const handleSaveEdit = async (docId) => {
         if (!editFileName.trim()) return toast.error("File name cannot be empty.");
@@ -334,49 +379,61 @@ const TeacherDocumentUpload = () => {
                                     <td className="p-4 text-gray-700">{docItem.teacher}</td>
 
                                     {/* Action Buttons Column */}
-                                    <td className="p-4">
-                                        <div className="flex justify-center items-center gap-3">
-                                            <a 
-                                                href={docItem.fileUrl} 
-                                                target="_blank" 
-                                                rel="noopener noreferrer" 
-                                                className="text-blue-600 font-bold uppercase text-[10px] hover:underline"
-                                            >
-                                                View
-                                            </a>
+                                    {/* Action Buttons Column */}
+<td className="p-4">
+    <div className="flex justify-center items-center gap-3 flex-wrap">
 
-                                            {isEditing ? (
-                                                <>
-                                                    <button 
-                                                        onClick={() => handleSaveEdit(docItem.id)}
-                                                        className="text-green-600 font-bold uppercase text-[10px] hover:underline"
-                                                    >
-                                                        Save
-                                                    </button>
-                                                    <button 
-                                                        onClick={() => setEditingDocId(null)}
-                                                        className="text-gray-500 font-bold uppercase text-[10px] hover:underline"
-                                                    >
-                                                        Cancel
-                                                    </button>
-                                                </>
-                                            ) : (
-                                                <button 
-                                                    onClick={() => handleStartEdit(docItem)}
-                                                    className="text-orange-500 font-bold uppercase text-[10px] hover:underline"
-                                                >
-                                                    Edit
-                                                </button>
-                                            )}
+        {/* VIEW */}
+        <button
+            onClick={() => handleViewDocument(docItem)}
+            className="text-blue-600 font-bold uppercase text-[10px] hover:underline"
+        >
+            View
+        </button>
 
-                                            <button 
-                                                onClick={() => handleDelete(docItem.id)} 
-                                                className="text-red-500 font-bold uppercase text-[10px] hover:underline"
-                                            >
-                                                Delete
-                                            </button>
-                                        </div>
-                                    </td>
+        {/* DOWNLOAD */}
+        <button
+            onClick={() => handleDownloadDocument(docItem)}
+            className="text-green-600 font-bold uppercase text-[10px] hover:underline"
+        >
+            Download
+        </button>
+
+        {isEditing ? (
+            <>
+                <button
+                    onClick={() => handleSaveEdit(docItem.id)}
+                    className="text-green-600 font-bold uppercase text-[10px] hover:underline"
+                >
+                    Save
+                </button>
+
+                <button
+                    onClick={() => setEditingDocId(null)}
+                    className="text-gray-500 font-bold uppercase text-[10px] hover:underline"
+                >
+                    Cancel
+                </button>
+            </>
+        ) : (
+            <button
+                onClick={() => handleStartEdit(docItem)}
+                className="text-orange-500 font-bold uppercase text-[10px] hover:underline"
+            >
+                Edit
+            </button>
+        )}
+
+        {/* DELETE */}
+        <button
+            onClick={() => handleDelete(docItem.id)}
+            className="text-red-500 font-bold uppercase text-[10px] hover:underline"
+        >
+            Delete
+        </button>
+
+    </div>
+</td>
                                 </tr>
                             );
                         })}
